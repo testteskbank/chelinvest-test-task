@@ -1,0 +1,19 @@
+<div class="list-container">
+  <div *ngFor="let data of weatherDataList">
+    <div class="weather-col d-inline-flex flex-column align-items-center">
+      <div>
+        <span>  {{data.dt * 1000 | date :  'dd/MM/yyyy HH:MM'}}</span>
+      </div>
+      <div class="d-flex mt-3 align-items-center">
+        <span class="mr-2">{{ tempConverter(data.main.temp, 'K', data.unit) | number}}</span>
+        <div class="form-group m-0 ">
+          <select [(ngModel)]="data.unit" class="form-control">
+            <option>C</option>
+            <option>K</option>
+            <option>F</option>
+          </select>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
