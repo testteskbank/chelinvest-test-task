@@ -82,12 +82,10 @@ export class DashboardComponent implements OnInit, AfterViewInit {
   }
 
   getCurrentWeatherByCity(lng, lat) {
-    this.geoCodeService.getCityNameByGeoCoord(lng, lat).pipe(switchMap((data) => {
-      const geoData: geocodeInterface = data;
+    this.geoCodeService.getCityNameByGeoCoord(lng, lat).pipe(switchMap((geoData: geocodeInterface) => {
       this.currentCity = geoData.city;
       return this.openWeatherMap.getCurrentWeather(lng, lat);
-    })).subscribe((data) => {
-      const tempData: currentWeatherInterface = data;
+    })).subscribe((tempData: currentWeatherInterface) => {
       this.currentCityTemp = tempData.main.temp;
     });
   }
