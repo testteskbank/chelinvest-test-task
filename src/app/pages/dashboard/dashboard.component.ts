@@ -53,16 +53,11 @@ export class DashboardComponent implements OnInit, AfterViewInit {
 
   ngAfterViewInit() {
     if (this.localStorageService.getApiKey() === null) {
-      this.modalRef = this.modalService.show(this.modalAppKey, {
-        backdrop: true,
-        ignoreBackdropClick: true,
-        class: 'modal-md'
-      });
+      this.openModalApiKey();
     }
   }
 
   pageChanged(e) {
-    this.weatherDataList = (this.weatherData);
     this.weatherDataList = this.weatherData.filter((data, index) => {
       return index < e.page * this.itemPerPage && index >= e.page * this.itemPerPage - this.itemPerPage;
     });
@@ -70,21 +65,23 @@ export class DashboardComponent implements OnInit, AfterViewInit {
 
   getDataByCity() {
     this.openWeatherMap.getWeather().subscribe((data) => {
-      this.weatherData = data.list.map((dataCol, index) => {
-        return {
-          unit: 'C',
-          ...dataCol,
-        };
-      });
-      this.totalItems = data.list.length;
-      this.pageChanged({page: 1});
+      this.loadWeather(data);
       this.getCurrentWeatherByCity(61.387, 55.171);
     });
   }
 
+  loadWeather(data) {
+    this.weatherData = data.list.map((dataCol, index) => {
+      return {
+        unit: 'C',
+        ...dataCol,
+      };
+    });
+    this.totalItems = data.list.length;
+    this.pageChanged({page: 1});
+  }
 
   getCurrentWeatherByCity(lng, lat) {
-    const req = [this.geoCodeService.getCityNameByGeoCoord(lng, lat), this.openWeatherMap.getCurrentWeather(lng, lat)];
     this.geoCodeService.getCityNameByGeoCoord(lng, lat).pipe(switchMap((data) => {
       const geoData: geocodeInterface = data;
       this.currentCity = geoData.city;
@@ -98,14 +95,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
   updateDataByGeo(lng: number, lat: number) {
     this.getCurrentWeatherByCity(lng, lat);
     this.openWeatherMap.getWeatherByGeo(lng, lat).subscribe((data) => {
-      this.weatherData = data.list.map((dataCol, index) => {
-        return {
-          unit: 'C',
-          ...dataCol
-        };
-      });
-      this.totalItems = data.list.length;
-      this.pageChanged({page: 1});
+      this.loadWeather(data);
     });
   }
 
@@ -123,13 +113,17 @@ export class DashboardComponent implements OnInit, AfterViewInit {
     });
   }
 
-  resetApikey() {
-    this.errorApiMsg = false;
-    this.localStorageService.removeApiKey();
+  openModalApiKey() {
     this.modalRef = this.modalService.show(this.modalAppKey, {
       backdrop: true,
       ignoreBackdropClick: true,
       class: 'modal-md'
     });
+  }
+
+  resetApikey() {
+    this.errorApiMsg = false;
+    this.localStorageService.removeApiKey();
+    this.openModalApiKey();
   }
 }
