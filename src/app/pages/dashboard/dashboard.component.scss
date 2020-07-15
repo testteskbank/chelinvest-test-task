@@ -34,21 +34,30 @@
 }
 
 .weather-container {
+
   height: 90vh;
   display: flex;
   align-items: center;
   flex-direction: column;
-
+  @media (max-width: 1200px) {
+    height: unset;
+  }
   .header-weather {
     height: 10%;
     display: flex;
     align-items: center;
 
+    @media (max-width: 1200px) {
+      height: unset;
+    }
   }
 
   .list-weather {
     height: 80%;
 
+    @media (max-width: 1200px) {
+      height: unset;
+    }
   }
 
   .pagination-weather {
@@ -56,5 +65,8 @@
     display: flex;
     align-items: center;
 
+    @media (max-width: 1200px) {
+      height: unset;
+    }
   }
 }
