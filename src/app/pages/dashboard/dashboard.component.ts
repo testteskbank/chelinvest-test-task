@@ -49,15 +49,10 @@ export class DashboardComponent implements AfterViewInit, OnDestroy {
   }
 
   ngAfterViewInit() {
-    if (this.localStorageService.getApiKey() !== null) {
-      this.keys.getApiKey();
+    if (this.keys.issetKey()) {
       this.getDataByCity();
     } else {
       this.openModalApiKey();
-    }
-    if (this.localStorageService.getApiKey() !== null) {
-      this.keys.getApiKey();
-      this.getDataByCity();
     }
   }
 
