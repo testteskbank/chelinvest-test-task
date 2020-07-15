@@ -5,14 +5,7 @@
         <span>  {{data.dt * 1000 | date :  'dd/MM/yyyy HH:MM'}}</span>
       </div>
       <div class="d-flex mt-3 align-items-center">
-        <span class="mr-2">{{ tempConverter(data.main.temp, 'K', data.unit) | number}}</span>
-        <div class="form-group m-0 ">
-          <select [(ngModel)]="data.unit" class="form-control">
-            <option>C</option>
-            <option>K</option>
-            <option>F</option>
-          </select>
-        </div>
+        <span class="mr-2">{{ tempConverter(data.main.temp, 'K', unit) | number}}</span>
       </div>
     </div>
   </div>

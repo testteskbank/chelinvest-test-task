@@ -1,4 +1,45 @@
-.current-weather{
+.current-weather {
   font-size: 25px;
   margin: 10px
+}
+
+
+.map-container {
+  height: 90vh;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+
+
+  .map-weather {
+    height: 10%;
+  }
+
+  .map {
+    height: 80%;
+    width: 100%;
+  }
+
+  .reset-btn {
+    height: 10%;
+  }
+}
+
+.weather-container {
+  height: 90vh;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+
+  .header-weather {
+    height: 10%;
+  }
+
+  .list-weather {
+    height: 80%;
+  }
+
+  .pagination-weather {
+    height: 10%;
+  }
 }
