@@ -5,11 +5,14 @@
 
 
 .map-container {
+
   height: 90vh;
   display: flex;
   align-items: center;
   flex-direction: column;
-
+  @media (max-width: 1200px) {
+    flex-direction: column-reverse;
+  }
 
   .map-weather {
     height: 10%;
@@ -41,7 +44,9 @@
   flex-direction: column;
   @media (max-width: 1200px) {
     height: unset;
+
   }
+
   .header-weather {
     height: 10%;
     display: flex;
@@ -49,14 +54,16 @@
 
     @media (max-width: 1200px) {
       height: unset;
+      margin: 15px;
     }
   }
 
   .list-weather {
     height: 80%;
-
+    width: 100%;
     @media (max-width: 1200px) {
       height: unset;
+      width: unset;
     }
   }
 
@@ -67,6 +74,7 @@
 
     @media (max-width: 1200px) {
       height: unset;
+      margin: 15px;
     }
   }
 }
