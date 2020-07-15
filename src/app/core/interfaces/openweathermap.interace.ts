@@ -19,7 +19,7 @@ export interface currentWeatherInterface {
   wind: {
     speed: number;
     deg: number;
-  },
+  };
   clouds: {
     all: number;
   };

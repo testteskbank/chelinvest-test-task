@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import { Subject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -12,13 +11,13 @@ export class GlobalFunctionService {
   tempConverter = (val: number, from: string, to: string) => {
     switch (from) {
       case 'K':
-        return this.tempK(val, to);
+        return this.getTempFromK(val, to);
       default:
         return;
     }
   };
 
-  tempK(val: number, to: string) {
+  getTempFromK(val: number, to: string) {
     switch (to) {
       case 'C':
         return val - 273.15;
@@ -29,5 +28,9 @@ export class GlobalFunctionService {
       default:
         return;
     }
+  }
+
+  getChelyabinskCoord() {
+    return {lng: 61.387, lat: 55.171};
   }
 }
