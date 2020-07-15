@@ -13,4 +13,12 @@ export class KeysService {
   getApiKey() {
     this.apiKey = this.localStorage.getApiKey();
   }
+
+  issetKey() {
+    if (this.apiKey) {
+      return true;
+    } else {
+      return false;
+    }
+  }
 }
