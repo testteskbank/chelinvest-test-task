@@ -1,12 +1,12 @@
 <div class="row align-items-center">
-  <div class="map-container col-xl-8 border mt-3 col-xs-12">
+  <div class="map-container col-xl-8 mt-3 col-xs-12">
     <div class="map-weather">
       <span class="current-weather">
-        Погода в {{currentCity}} {{tempConverter(currentCityTemp, 'K', currentUnit) | number}} {{currentUnit}}
+        Weather in {{currentCity}} {{tempConverter(currentCityTemp, 'K', currentUnit) | number}} {{currentUnit}}
       </span>
     </div>
     <div class="map">
-      <app-map (coordChange)="coordUpd.next($event)"></app-map>
+      <app-map (coordChange)="coordUpd$.next($event)"></app-map>
     </div>
     <div class="reset-btn">
       <button type="button" (click)="resetApikey()" class="m-2 btn btn-primary">
@@ -14,10 +14,10 @@
       </button>
     </div>
   </div>
-  <div class="weather-container col-xl-4 border mt-3 col-xs-12 ">
+  <div class="weather-container col-xl-4 mt-3 col-xs-12 ">
     <div class="header-weather">
       <div class="form-group m-0 ">
-        <label>current unit:</label>
+        <label class="m-0">current unit:</label>
         <select [(ngModel)]="currentUnit" class="form-control">
           <option>C</option>
           <option>K</option>

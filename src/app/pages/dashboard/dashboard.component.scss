@@ -13,15 +13,23 @@
 
   .map-weather {
     height: 10%;
+    display: flex;
+    align-items: center;
   }
 
   .map {
     height: 80%;
     width: 100%;
+    display: flex;
+    align-items: center;
+
   }
 
   .reset-btn {
     height: 10%;
+    display: flex;
+    align-items: center;
+
   }
 }
 
@@ -33,13 +41,20 @@
 
   .header-weather {
     height: 10%;
+    display: flex;
+    align-items: center;
+
   }
 
   .list-weather {
     height: 80%;
+
   }
 
   .pagination-weather {
     height: 10%;
+    display: flex;
+    align-items: center;
+
   }
 }

@@ -1,13 +1,12 @@
 import { Component, OnInit, ViewChild, ElementRef, AfterViewInit, OnDestroy } from '@angular/core';
 import { OpenweathermapService } from '../../core/services/weather/openweathermap.service';
 import { GlobalFunctionService } from 'src/app/core/services/global-function.service';
-import { forkJoin, Subject, } from 'rxjs';
-import { debounceTime, switchMap, takeUntil } from 'rxjs/operators';
+import { Subject, } from 'rxjs';
+import { debounceTime, takeUntil } from 'rxjs/operators';
 import { BsModalService } from 'ngx-bootstrap/modal';
 import { LocalStorageService } from 'src/app/core/services/local-storage.service';
 import { KeysService } from '../../core/services/keys.service';
 import { GeocodeService } from '../../core/services/geo/geocode.service';
-import { geocodeInterface } from '../../core/interfaces/geocode.interface';
 import { currentWeatherInterface, listWeatherOneElementInterface } from '../../core/interfaces/openweathermap.interace';
 
 
@@ -17,11 +16,11 @@ import { currentWeatherInterface, listWeatherOneElementInterface } from '../../c
   styleUrls: ['./dashboard.component.scss']
 })
 
-export class DashboardComponent implements AfterViewInit, OnDestroy {
+export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
 
   constructor(private openWeatherMap: OpenweathermapService, private fn: GlobalFunctionService, private modalService: BsModalService,
               private localStorageService: LocalStorageService,
-              private keys: KeysService, private geoCodeService: GeocodeService) {
+              private keys: KeysService, private globalFunctionService: GlobalFunctionService) {
   }
 
   @ViewChild('modalAppKey') modalAppKey: ElementRef;
@@ -31,7 +30,7 @@ export class DashboardComponent implements AfterViewInit, OnDestroy {
   public totalItems: number;
   public weatherDataList: Array<listWeatherOneElementInterface> = [];
   public key: string;
-  public coordUpd = new Subject();
+  public coordUpd$ = new Subject();
   public errorApiMsg = false;
   public modalRef;
   public itemPerPage = 8;
@@ -43,7 +42,7 @@ export class DashboardComponent implements AfterViewInit, OnDestroy {
   public currentUnit = 'C';
 
   ngOnInit() {
-    this.coordUpd.pipe(debounceTime(500), takeUntil(this.unsubscribe$)).subscribe(({lng, lat}) => {
+    this.coordUpd$.pipe(debounceTime(500), takeUntil(this.unsubscribe$)).subscribe(({lng, lat}) => {
       this.updateDataByGeo(lng, lat);
     });
   }
@@ -65,7 +64,8 @@ export class DashboardComponent implements AfterViewInit, OnDestroy {
   getDataByCity() {
     this.openWeatherMap.getWeather().pipe(takeUntil(this.unsubscribe$)).subscribe((data) => {
       this.loadWeather(data);
-      this.getCurrentWeatherByCity(61.387, 55.171);
+      const {lng, lat} = this.globalFunctionService.getChelyabinskCoord();
+      this.getCurrentWeatherByCity(lng, lat);
     });
   }
 
@@ -81,11 +81,9 @@ export class DashboardComponent implements AfterViewInit, OnDestroy {
   }
 
   getCurrentWeatherByCity(lng, lat) {
-    this.geoCodeService.getCityNameByGeoCoord(lng, lat).pipe(switchMap((geoData: geocodeInterface) => {
-      this.currentCity = geoData.city;
-      return this.openWeatherMap.getCurrentWeather(lng, lat);
-    }), takeUntil(this.unsubscribe$)).subscribe((tempData: currentWeatherInterface) => {
-      this.currentCityTemp = tempData.main.temp;
+    this.openWeatherMap.getCurrentWeather(lng, lat).pipe(takeUntil(this.unsubscribe$)).subscribe((data: currentWeatherInterface) => {
+      this.currentCity = data.name;
+      this.currentCityTemp = data.main.temp;
     });
   }
 

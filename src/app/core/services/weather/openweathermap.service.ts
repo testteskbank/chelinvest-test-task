@@ -1,9 +1,8 @@
 import { Injectable } from '@angular/core';
-import { catchError, map } from 'rxjs/operators';
-import { HttpClient } from '@angular/common/http';
+import { catchError } from 'rxjs/operators';
 import { ApiService } from '../api.service';
 import { ErrorsService } from '../errors.service';
-import { Observable, of, Subject, throwError } from 'rxjs';
+import { Observable, Subject, throwError } from 'rxjs';
 import { KeysService } from '../keys.service';
 import { currentWeatherInterface, listWeatherInterface } from '../../interfaces/openweathermap.interace';
 

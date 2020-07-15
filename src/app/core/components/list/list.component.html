@@ -1,11 +1,13 @@
-<div class="list-container">
-  <div *ngFor="let data of weatherDataList">
-    <div class="weather-col d-inline-flex flex-column align-items-center">
+<div #container class="list-container">
+  <div [style.height.px]="container.parentElement.parentElement.clientHeight/weatherDataList.length"
+       class="weather-col-border" *ngFor="let data of weatherDataList">
+    <div
+      class="weather-col">
       <div>
         <span>  {{data.dt * 1000 | date :  'dd/MM/yyyy HH:MM'}}</span>
       </div>
-      <div class="d-flex mt-3 align-items-center">
-        <span class="mr-2">{{ tempConverter(data.main.temp, 'K', unit) | number}}</span>
+      <div>
+        <span class="mr-2">{{ tempConverter(data.main.temp, 'K', unit) | number}} {{unit}}</span>
       </div>
     </div>
   </div>
