@@ -1,8 +1,8 @@
-import { Component, OnInit, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, AfterViewInit, OnDestroy } from '@angular/core';
 import { OpenweathermapService } from '../../core/services/weather/openweathermap.service';
 import { GlobalFunctionService } from 'src/app/core/services/global-function.service';
 import { forkJoin, Subject, } from 'rxjs';
-import { debounceTime, switchMap } from 'rxjs/operators';
+import { debounceTime, switchMap, takeUntil } from 'rxjs/operators';
 import { BsModalService } from 'ngx-bootstrap/modal';
 import { LocalStorageService } from 'src/app/core/services/local-storage.service';
 import { KeysService } from '../../core/services/keys.service';
@@ -17,7 +17,7 @@ import { currentWeatherInterface, listWeatherOneElementInterface } from '../../c
   styleUrls: ['./dashboard.component.scss']
 })
 
-export class DashboardComponent implements OnInit, AfterViewInit {
+export class DashboardComponent implements AfterViewInit, OnDestroy {
 
   constructor(private openWeatherMap: OpenweathermapService, private fn: GlobalFunctionService, private modalService: BsModalService,
               private localStorageService: LocalStorageService,
@@ -39,20 +39,18 @@ export class DashboardComponent implements OnInit, AfterViewInit {
   public currentCity = 'Chelyabinsk';
   public currentCityTemp: number;
   public tempConverter = this.fn.tempConverter;
+  public unsubscribe$ = new Subject();
 
   ngOnInit() {
-    if (this.localStorageService.getApiKey() !== null) {
-      this.keys.getApiKey();
-      this.getDataByCity();
-    }
-
-    this.coordUpd.pipe(debounceTime(500)).subscribe(({lng, lat}) => {
+    this.coordUpd.pipe(debounceTime(500), takeUntil(this.unsubscribe$)).subscribe(({lng, lat}) => {
       this.updateDataByGeo(lng, lat);
     });
   }
 
   ngAfterViewInit() {
-    if (this.localStorageService.getApiKey() === null) {
+    if (this.keys.issetKey()) {
+      this.getDataByCity();
+    } else {
       this.openModalApiKey();
     }
   }
@@ -64,7 +62,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
   }
 
   getDataByCity() {
-    this.openWeatherMap.getWeather().subscribe((data) => {
+    this.openWeatherMap.getWeather().pipe(takeUntil(this.unsubscribe$)).subscribe((data) => {
       this.loadWeather(data);
       this.getCurrentWeatherByCity(61.387, 55.171);
     });
@@ -85,21 +83,21 @@ export class DashboardComponent implements OnInit, AfterViewInit {
     this.geoCodeService.getCityNameByGeoCoord(lng, lat).pipe(switchMap((geoData: geocodeInterface) => {
       this.currentCity = geoData.city;
       return this.openWeatherMap.getCurrentWeather(lng, lat);
-    })).subscribe((tempData: currentWeatherInterface) => {
+    }), takeUntil(this.unsubscribe$)).subscribe((tempData: currentWeatherInterface) => {
       this.currentCityTemp = tempData.main.temp;
     });
   }
 
   updateDataByGeo(lng: number, lat: number) {
     this.getCurrentWeatherByCity(lng, lat);
-    this.openWeatherMap.getWeatherByGeo(lng, lat).subscribe((data) => {
+    this.openWeatherMap.getWeatherByGeo(lng, lat).pipe(takeUntil(this.unsubscribe$)).subscribe((data) => {
       this.loadWeather(data);
     });
   }
 
 
   checkApiKey(key) {
-    this.openWeatherMap.checkApiKey(key).subscribe((valid: boolean) => {
+    this.openWeatherMap.checkApiKey(key).pipe(takeUntil(this.unsubscribe$)).subscribe((valid: boolean) => {
       if (!valid) {
         this.errorApiMsg = true;
       } else {
@@ -123,5 +121,9 @@ export class DashboardComponent implements OnInit, AfterViewInit {
     this.errorApiMsg = false;
     this.localStorageService.removeApiKey();
     this.openModalApiKey();
+  }
+
+  ngOnDestroy() {
+
   }
 }

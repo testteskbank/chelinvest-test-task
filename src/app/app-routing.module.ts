@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { ContentLayoutComponent } from './layouts/content-layout/content-layout.component';
+import { GetkeyfromlsGuard } from './core/guard/getkeyfromls.guard';
 
 
 const routes: Routes = [{
@@ -10,6 +11,7 @@ const routes: Routes = [{
     {
       path: '',
       loadChildren: () => import('./pages/dashboard/dashboard.module').then(m => m.DashboardModule),
+      canActivate: [GetkeyfromlsGuard]
     }]
 }];
 
