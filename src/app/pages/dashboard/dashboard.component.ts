@@ -40,6 +40,7 @@ export class DashboardComponent implements AfterViewInit, OnDestroy {
   public currentCityTemp: number;
   public tempConverter = this.fn.tempConverter;
   public unsubscribe$ = new Subject();
+  public currentUnit = 'C';
 
   ngOnInit() {
     this.coordUpd.pipe(debounceTime(500), takeUntil(this.unsubscribe$)).subscribe(({lng, lat}) => {

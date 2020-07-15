@@ -12,13 +12,12 @@ export class ListComponent implements OnInit {
   }
 
   @Input() weatherDataList;
+  @Input() unit;
   public tempConverter = this.fn.tempConverter;
 
   ngOnInit(): void {
 
   }
-
-
 
 
 }
